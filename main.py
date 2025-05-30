@@ -52,6 +52,8 @@ async def load():
     for extension in extensions:
         await bot.load_extension(extension)
 
+    await bot.load_extension('cogs.music_cog.music')
+
 if __name__ == '__main__':
     asyncio.run(load())
     bot.run(os.environ['overseer_token'])
