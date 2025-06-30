@@ -32,6 +32,19 @@ Mock - Mock a message```""")
             await interaction.response.send_message(
                 f'Your wheelspin result: **{random.choice(options)}**!' if not shorten else f'**{random.choice(options)}**!')
 
+    @app_commands.command(name="roleperms", description="List a role's permissions")
+    @app_commands.describe(role='ID of the role')
+    async def checkperm(self, interaction: discord.Interaction, role: discord.Role):
+        perms = role.permissions
+        enabled_perms = [name for name, value in perms if value]
+
+        if not enabled_perms:
+            await interaction.response.send_message(f"Role ({role.name}) has no permissions!")
+        else:
+            formatted = "\n".join(f"•{perm}" for perm in enabled_perms)
+            await interaction.response.send_message(formatted)
+
+
 async def setup(bot):
     await bot.add_cog(Basics(bot))
 
