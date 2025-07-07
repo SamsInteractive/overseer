@@ -52,7 +52,7 @@ async def load():
     for extension in extensions:
         await bot.load_extension(extension)
 
-    if 'music_cog.py' in os.listdir('./cogs'):
+    if "music_cog" in os.listdir('./cogs'):
         await bot.load_extension('cogs.music_cog.music')
 
 if __name__ == '__main__':
