@@ -54,6 +54,8 @@ async def load():
 
     if "music_cog" in os.listdir('./cogs'):
         await bot.load_extension('cogs.music_cog.music')
+    if "music" in os.listdir('./cogs'):
+        await bot.load_extension('cogs.music.music')
 
 if __name__ == '__main__':
     asyncio.run(load())
