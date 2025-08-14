@@ -3,4 +3,4 @@
 .env
 __pycache__/
 cogs/music/
-cogs/music/
+cogs/music_cog/
