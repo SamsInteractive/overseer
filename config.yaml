@@ -1,0 +1,6 @@
+bot:
+  version: v0.1.0
+  status:
+    enabled: false
+    activity: watching
+    name: "over the universe✨ {bot.version}"
