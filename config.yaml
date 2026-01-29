@@ -4,3 +4,16 @@ bot:
     enabled: false
     activity: watching
     name: "over the universe✨ {bot.version}"
+  prefix: "!"
+
+database:
+  backend: sqlite # sqlite or mysql
+
+  sqlite:
+    file: data/database.db
+
+  mysql:
+    host: 127.0.0.1
+    port: 3306
+    user: overseer
+    database: overseer-db

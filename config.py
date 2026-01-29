@@ -20,7 +20,7 @@ def wrap_dict(data: ConfigValue) -> DotDict | int | str | bool:
         return data
 
 
-def load_config(path: str = "config.yaml") -> dict[str, ConfigValue]:
+def load_config(path: str = "config.yaml") -> DotDict:
     """
     Loads YAML type config data and returns a nested dictionary.
 
@@ -47,4 +47,4 @@ def load_config(path: str = "config.yaml") -> dict[str, ConfigValue]:
 
         return f_data
 
-    return expand_config(cfg, cfg)
+    return wrap_dict(expand_config(cfg, cfg))
