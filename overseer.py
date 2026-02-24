@@ -20,21 +20,29 @@ def error(message: str):
     print(f"{Color.yellow}[ERROR]: {Color.end}{message}")
 
 def info(message: str, color='end'):
-    print(f"[INFO]: {getattr(Color, color, Color.end)}{message}{Color.end}")
+    print(f"{getattr(Color, color, Color.end)}[INFO]: {message}{Color.end}")
+
+def success(message: str):
+    print(f"{Color.green}[INFO]: {message}{Color.end}")
 
 
 class Bot(commands.Bot):
     async def on_ready(self):
-        info(f"Logged in as {self.user} (ID: {self.user.id})")
-        info("Attempting to update bot status activity...")
-        try:
-            await bot.change_presence(activity=discord.Activity(
-                type=discord.ActivityType.watching,
-                name=config.bot.status.name)
-            )
-        except Exception as e:
-            print(f"Failed to update bot status: {e}")
-
+        success(f"Logged in as '{self.user}' (ID: {self.user.id})")
+        if config.bot.status.enabled:
+            info("Attempting to update bot status activity...")
+            try:
+                await bot.change_presence(activity=discord.Activity(
+                    type=discord.ActivinfoityType.watching,
+                    name=config.bot.status.name)
+                )
+                success(f"Successfully changed status to: "
+                     f"'{config.bot.status.activity}: "
+                     f"{config.bot.status.name}'")
+            except Exception as e:
+                error(f"Failed to update bot status: {e}")
+        else:
+            info("Status messages disabled in config. Skipping...")
 
 
 config = load_config()
@@ -48,7 +56,7 @@ bot = Bot(command_prefix=config.bot.prefix, intents=intents)
 
 
 async def load_cogs():
-    print("Attempting to load cogs...")
+    info("Attempting to load cogs...")
     if 'cogs' in os.listdir():
         cogs_loaded = 0
         for cog in os.listdir('./cogs'):
@@ -56,12 +64,12 @@ async def load_cogs():
                 try:
                     await bot.load_extension(cog)
                     cogs_loaded += 1
-                    print(f"{Color.green}Successfully loaded cog '{cog}'{Color.end}")
+                    success(f"Successfully loaded cog '{cog}'")
                 except Exception as e:
-                    print(f"Failed to load cog '{cog}': {e}")
-        print(f"Finished loading {cogs_loaded} cogs.")
+                    warn(f"Failed to load cog '{cog}': {e}")
+        success(f"Finished loading {cogs_loaded} cogs.")
     else:
-        print("WARN: Attempted to load cogs but no directory was found.")
+        warn("Attempted to load cogs but no directory was found.")
 
 
 if __name__ == "__main__":
