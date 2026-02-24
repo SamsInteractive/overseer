@@ -6,18 +6,27 @@ import os
 from config import load_config
 
 
-class TermColors:
+class Color:
     red = '\033[91m'
     green = '\033[92m'
     yellow = '\033[93m'
     blue = '\033[94m'
     end = '\033[0m'
 
+def warn(message: str):
+    print(f"{Color.yellow}[WARN]: {Color.end}{message}")
+
+def error(message: str):
+    print(f"{Color.yellow}[ERROR]: {Color.end}{message}")
+
+def info(message: str, color='end'):
+    print(f"[INFO]: {getattr(Color, color, Color.end)}{message}{Color.end}")
+
 
 class Bot(commands.Bot):
     async def on_ready(self):
-        print(f"Logged in as {self.user} using ID: {self.user.id}")
-        print("Attempting to update bot status activity...")
+        info(f"Logged in as {self.user} (ID: {self.user.id})")
+        info("Attempting to update bot status activity...")
         try:
             await bot.change_presence(activity=discord.Activity(
                 type=discord.ActivityType.watching,
@@ -39,19 +48,22 @@ bot = Bot(command_prefix=config.bot.prefix, intents=intents)
 
 
 async def load_cogs():
-    for cog in os.listdir('./cogs'):
-        if cog.endswith('.py'):
-            try:
-                await bot.load_extension(cog)
-                print(f"Successfully loaded cog '{cog}'")
-            except Exception as e:
-                print(f"Failed to load cog '{cog}': {e}")
+    print("Attempting to load cogs...")
+    if 'cogs' in os.listdir():
+        cogs_loaded = 0
+        for cog in os.listdir('./cogs'):
+            if cog.endswith('.py'):
+                try:
+                    await bot.load_extension(cog)
+                    cogs_loaded += 1
+                    print(f"{Color.green}Successfully loaded cog '{cog}'{Color.end}")
+                except Exception as e:
+                    print(f"Failed to load cog '{cog}': {e}")
+        print(f"Finished loading {cogs_loaded} cogs.")
+    else:
+        print("WARN: Attempted to load cogs but no directory was found.")
 
 
 if __name__ == "__main__":
-    print("Loading cogs...")
-    if 'cogs' in os.listdir():
-        asyncio.run(load_cogs())
-    else:
-        print("Attempted to load cogs but no directory was found.")
+    asyncio.run(load_cogs())
     bot.run(os.environ['bot_token'])
