@@ -43,7 +43,7 @@ async def load_cogs():
         if cog.endswith('.py'):
             try:
                 await bot.load_extension(cog)
-                print(f"Sucessfully loaded '{cog}'")
+                print(f"Successfully loaded cog '{cog}'")
             except Exception as e:
                 print(f"Failed to load cog '{cog}': {e}")
 
