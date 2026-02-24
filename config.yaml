@@ -10,7 +10,7 @@ database:
   backend: sqlite # sqlite or mysql
 
   sqlite:
-    file: data/database.db
+    file: data/overseer.db
 
   mysql:
     host: 127.0.0.1
