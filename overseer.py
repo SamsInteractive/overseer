@@ -33,7 +33,7 @@ class Bot(commands.Bot):
             info("Attempting to update bot status activity...")
             try:
                 await bot.change_presence(activity=discord.Activity(
-                    type=discord.ActivinfoityType.watching,
+                    type=getattr(discord.ActivityType, config.bot.status.activity),
                     name=config.bot.status.name)
                 )
                 success(f"Successfully changed status to: "
