@@ -1,10 +1,11 @@
+from logging import exception
+
 import discord
 from discord.ext import commands
 import asyncio
 import os
 
 from config import load_config
-
 
 class Color:
     red = '\033[91m'
@@ -29,11 +30,18 @@ def success(message: str):
 class Bot(commands.Bot):
     async def on_ready(self):
         success(f"Logged in as '{self.user}' (ID: {self.user.id})")
+        info("Syncing bot commands...")
+        try:
+            await self.tree.sync()
+            success("Finished syncing commands.")
+        except exception as e:
+            error(f"Failed to sync commands: {e}")
         if config.bot.status.enabled:
             info("Attempting to update bot status activity...")
             try:
                 await bot.change_presence(activity=discord.Activity(
-                    type=getattr(discord.ActivityType, config.bot.status.activity),
+                    type=getattr(discord.ActivityType,
+                                 config.bot.status.activity),
                     name=config.bot.status.name)
                 )
                 success(f"Successfully changed status to: "
@@ -43,6 +51,7 @@ class Bot(commands.Bot):
                 error(f"Failed to update bot status: {e}")
         else:
             info("Status messages disabled in config. Skipping...")
+        success("Initialisation complete. Operating normally.")
 
 
 config = load_config()
@@ -62,7 +71,7 @@ async def load_cogs():
         for cog in os.listdir('./cogs'):
             if cog.endswith('.py'):
                 try:
-                    await bot.load_extension(cog)
+                    await bot.load_extension(f"cogs.{cog.split('.')[0]}")
                     cogs_loaded += 1
                     success(f"Successfully loaded cog '{cog}'")
                 except Exception as e:
