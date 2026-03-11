@@ -15,19 +15,22 @@ class Basics(commands.Cog):
         for command in self.bot.tree.get_commands():
             try:
                 if command.__class__.__name__ in _loaded_commands:
-                    _loaded_commands[command.__class__.__name__].append(
-                        f"\n{command.extras['usage'].title()}: "
+                    _loaded_commands[type(command.binding).__name__].append(
+                        f"{command.extras['usage']}: "
                         f"{command.description}"
                     )
                 else:
-                    _loaded_commands[command.__class__.__name__] = [
-                        f"{command.extras['usage'].title()}: "
+                    _loaded_commands[type(command.binding).__name__] = [
+                        f"{command.extras['usage']}: "
                         f"{command.description}",]
             except Exception as e:
                 warn(f"Failed to retrieve requested command info "
                      f"for {command.name}: {e}")
-        loaded_commands = '\n'.join(f"**[{category}]**"
-                                  for category in _loaded_commands)
+
+        loaded_commands = '\n'.join(
+            f"**[{category}]**\n" + f"```{'\n'.join(commands)}```"
+            for category, commands in _loaded_commands.items())
+
         await interaction.response.send_message(loaded_commands)
 
 
